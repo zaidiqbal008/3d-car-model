@@ -58,7 +58,7 @@ function Segmented({ label, items, value, onPick }) {
   )
 }
 
-export default function Configurator({ open, tab, setTab, custom, setCustom, variants }) {
+export default function Configurator({ open, tab, setTab, custom, setCustom, variants, doors, setDoors }) {
   const set = (patch) => setCustom((c) => ({ ...c, ...patch }))
   const tabRefs = useRef([])
 
@@ -180,6 +180,12 @@ export default function Configurator({ open, tab, setTab, custom, setCustom, var
             </button>
           </div>
         )}
+      </div>
+
+      <div className="cfg-doors">
+        <button type="button" aria-pressed={doors} onClick={() => setDoors((d) => !d)}>
+          {doors ? 'Close doors' : 'Open doors'}
+        </button>
       </div>
 
       <div className="cfg-foot">

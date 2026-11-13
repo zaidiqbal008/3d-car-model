@@ -7,6 +7,7 @@ import content from './content.json'
 import Scene from './Scene.jsx'
 import Configurator from './Configurator.jsx'
 import Lamp3D from './Lamp3D.jsx'
+import { EXPLODE_PARTS, ASSEMBLE_SECONDS } from './explode.js'
 import { sim, configure as configureSim, launch, brake, reset as resetSim } from './speedtest.js'
 import { loadCustom, saveCustom } from './customization.js'
 
@@ -111,6 +112,94 @@ function SpecCard() {
         </dl>
       </div>
       <p className="note">{content.specs.note}</p>
+    </div>
+  )
+}
+
+/** Drag to rotate and scroll to zoom the part that is on show. Esc or Back returns to the exploded view. */
+function PartViewer({ selected, viewRef, onClose }) {
+  const ref = useRef(null)
+  const last = useRef({ x: 0, y: 0 })
+  const part = EXPLODE_PARTS.find((p) => p.id === selected)
+
+  useEffect(() => {
+    if (!selected) return
+    const el = ref.current
+    el?.focus()
+    // Wheel must be non-passive so the page does not scroll while zooming.
+    const onWheel = (e) => {
+      e.preventDefault()
+      const v = viewRef.current
+      v.zoom = Math.min(2.6, Math.max(0.5, v.zoom * Math.exp(-e.deltaY * 0.0012)))
+    }
+    el?.addEventListener('wheel', onWheel, { passive: false })
+    return () => el?.removeEventListener('wheel', onWheel)
+  }, [selected, viewRef])
+
+  if (!selected || !part) return null
+  const down = (e) => {
+    viewRef.current.drag = true
+    last.current = { x: e.clientX, y: e.clientY }
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+  const move = (e) => {
+    const v = viewRef.current
+    if (!v.drag) return
+    v.ry += (e.clientX - last.current.x) * 0.009
+    v.rx = Math.max(-1.4, Math.min(1.4, v.rx + (e.clientY - last.current.y) * 0.009))
+    last.current = { x: e.clientX, y: e.clientY }
+  }
+  const up = () => { viewRef.current.drag = false }
+  const key = (e) => {
+    const v = viewRef.current
+    if (e.key === 'Escape') onClose()
+    else if (e.key === 'ArrowLeft') v.ry -= 0.2
+    else if (e.key === 'ArrowRight') v.ry += 0.2
+    else if (e.key === 'ArrowUp') v.rx = Math.max(-1.4, v.rx - 0.2)
+    else if (e.key === 'ArrowDown') v.rx = Math.min(1.4, v.rx + 0.2)
+    else if (e.key === '+' || e.key === '=') v.zoom = Math.min(2.6, v.zoom * 1.15)
+    else if (e.key === '-') v.zoom = Math.max(0.5, v.zoom / 1.15)
+    else return
+    e.preventDefault()
+  }
+  return (
+    <>
+      <div
+        ref={ref}
+        className="viewer-surface"
+        tabIndex={0}
+        role="application"
+        aria-label={`Inspect ${part.label}. Drag or use the arrow keys to rotate, scroll or plus and minus to zoom, Escape to go back.`}
+        onPointerDown={down}
+        onPointerMove={move}
+        onPointerUp={up}
+        onPointerCancel={up}
+        onDoubleClick={() => Object.assign(viewRef.current, { rx: 0.25, ry: -0.6, zoom: 1 })}
+        onKeyDown={key}
+      />
+      <div className="viewer-card">
+        <p className="eyebrow">Inspecting</p>
+        <h3>{part.label}</h3>
+        <p>{part.note}</p>
+        <p className="viewer-hint">Drag to rotate · scroll to zoom · double-click to reset</p>
+        <button type="button" className="btn small" onClick={onClose}>Back to all parts</button>
+      </div>
+    </>
+  )
+}
+
+/** Controls for the exploded engine-detailing view: a pill at the bottom of the screen. */
+function EnginePanel({ open, mode, onStart, onAssemble }) {
+  return (
+    <div className={`engine-bar${open ? ' open' : ''}`} role="group" aria-label="Engine detailing"
+      aria-hidden={!open} inert={open ? undefined : ''}>
+      <button type="button" className="btn small" onClick={onStart} disabled={mode !== 'idle'}>
+        Engine detailing
+      </button>
+      <button type="button" className="btn small ghost" onClick={onAssemble}
+        disabled={mode !== 'apart' && mode !== 'centering'}>
+        Assemble
+      </button>
     </div>
   )
 }
@@ -244,6 +333,32 @@ export default function App() {
   const [custom, setCustom] = useState(loadCustom)
   const [tab, setTab] = useState('paint')
   const [lampOn, setLampOn] = useState(false)
+  const [doors, setDoors] = useState(false)
+  const [exploded, setExploded] = useState(false)
+  const [centered, setCentered] = useState(false)
+  const [engineStep, setEngineStep] = useState('idle') // idle | centering | apart | assembling
+  const timers = useRef([])
+  const later = (fn, ms) => { timers.current.push(setTimeout(fn, ms)) }
+  const clearLater = () => { timers.current.forEach(clearTimeout); timers.current = [] }
+  // Glide the car to the centre, then take it apart.
+  const startEngine = () => {
+    clearLater()
+    setEngineStep('centering')
+    setCentered(true)
+    later(() => { setExploded(true); setEngineStep('apart') }, 2400)
+  }
+  // Put it back together, then glide it back to the right.
+  const assemble = () => {
+    clearLater()
+    setSelected(null)
+    setExploded(false)
+    setEngineStep('assembling')
+    later(() => { setCentered(false) }, ASSEMBLE_SECONDS * 1000 + 300)
+    later(() => setEngineStep('idle'), ASSEMBLE_SECONDS * 1000 + 2600)
+  }
+  const [selected, setSelected] = useState(null)
+  const viewRef = useRef({ rx: 0.25, ry: -0.6, zoom: 1, drag: false })
+  const [engineOpen, setEngineOpen] = useState(false)
   const [mode, setMode] = useState(() => {
     try { return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark' } catch { return 'dark' }
   })
@@ -284,6 +399,21 @@ export default function App() {
     return () => io.disconnect()
   }, [])
 
+  // Reassemble when you leave the engine chapter; doors stay shut while the car is apart.
+  useEffect(() => {
+    if (engineOpen) return
+    clearLater()
+    setExploded(false)
+    setCentered(false)
+    setEngineStep('idle')
+  }, [engineOpen])
+  useEffect(() => clearLater, [])
+  useEffect(() => { if (!exploded) setSelected(null) }, [exploded])
+  useEffect(() => { if (exploded) setDoors(false) }, [exploded])
+
+  // Doors shut when you reach the speed test.
+  useEffect(() => { if (speedOpen) setDoors(false) }, [speedOpen])
+
   // Panels are only shown while their story chapter is on screen.
   useEffect(() => {
     const watch = (id, set) => {
@@ -295,7 +425,8 @@ export default function App() {
     }
     const a = watch('configure', setConfigOpen)
     const b = watch('speed', setSpeedOpen)
-    return () => { a(); b() }
+    const c = watch('engine', setEngineOpen)
+    return () => { a(); b(); c() }
   }, [])
 
   const focus = configOpen ? configureSection?.focus?.[tab] ?? null : null
@@ -310,7 +441,7 @@ export default function App() {
       <a className="skip" href="#highlights">Skip the 3D story</a>
       <Header mode={mode} onToggleTheme={() => setMode((m) => (m === 'light' ? 'dark' : 'light'))} />
 
-      <div className={`story${focus ? ' focused' : ''}`} ref={storyRef}>
+      <div className={`story${focus ? ' focused' : ''}${centered ? ' exploded' : ''}`} ref={storyRef}>
         <div className="stage" ref={stageRef}>
           <motion.div className="progress" style={{ scaleX: scrollYProgress }} />
           <Canvas
@@ -320,10 +451,11 @@ export default function App() {
             gl={{ antialias: true, powerPreference: 'high-performance' }}
           >
             <PerformanceMonitor onDecline={() => setDpr(1)} onIncline={() => setDpr(1.5)} flipflops={2} />
-            <Scene progress={smooth} variant={variant} custom={custom} focus={focus} panelOpen={configOpen || speedOpen} lampOn={lampOn} speedOpen={speedOpen} bg={colors.bg} />
+            <Scene progress={smooth} variant={variant} custom={custom} focus={focus} panelOpen={configOpen || speedOpen || engineOpen} lampOn={lampOn} speedOpen={speedOpen} doorsOpen={doors} exploded={exploded} centered={centered}
+              selected={selected} viewRef={viewRef} onSelectPart={setSelected} bg={colors.bg} />
           </Canvas>
 
-          <Lamp3D on={lampOn} onToggle={() => setLampOn((v) => !v)} />
+          <Lamp3D hide={engineOpen} on={lampOn} onToggle={() => setLampOn((v) => !v)} />
 
           <nav className="dots" aria-label="Story sections">
             {sections.map((s, i) => (
@@ -333,13 +465,24 @@ export default function App() {
             ))}
           </nav>
 
+          <PartViewer selected={selected} viewRef={viewRef} onClose={() => setSelected(null)} />
+          <EnginePanel open={engineOpen} mode={engineStep} onStart={startEngine} onAssemble={assemble} />
           <SpeedHud open={speedOpen} />
 
           <Configurator open={configOpen} tab={tab} setTab={setTab} custom={custom}
-            setCustom={setCustom} variants={variants} />
+            setCustom={setCustom} variants={variants} doors={doors} setDoors={setDoors} />
+
+          <button type="button" className={`doors-btn${configOpen || speedOpen || engineOpen ? ' hide' : ''}`}
+            aria-pressed={doors} onClick={() => setDoors((d) => !d)}>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7"
+              strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 18V9l9-5 3 2-6 4v8z" /><path d="M10 18h10M4 18h2" />
+            </svg>
+            {doors ? 'Close doors' : 'Open doors'}
+          </button>
 
           {variants.length > 0 && (
-            <div className={`finishes${configOpen || speedOpen ? ' hide' : ''}`} role="group" aria-label="Paint finish">
+            <div className={`finishes${configOpen || speedOpen || engineOpen ? ' hide' : ''}`} role="group" aria-label="Paint finish">
               {variants.map((v, i) => (
                 <button
                   key={v.name}
