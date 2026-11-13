@@ -181,7 +181,7 @@ function LampScene({ on, st, hitRef }) {
 }
 
 /** The pendant lamp: a small 3D scene with its own transparent canvas, plus the drag target. */
-export default function Lamp3D({ on, onToggle }) {
+export default function Lamp3D({ on, onToggle, hide = false }) {
   const st = useRef({ pull: 0, vel: 0, drag: false, sway: 0, swayV: 0, startY: 0, moved: 0 })
   const hit = useRef()
 
@@ -220,7 +220,7 @@ export default function Lamp3D({ on, onToggle }) {
   }
 
   return (
-    <div className={`lamp3d${on ? ' on' : ''}`}>
+    <div className={`lamp3d${on ? ' on' : ''}${hide ? ' hide' : ''}`}>
       <div className="lamp3d-beam" aria-hidden="true"><i /></div>
       <Canvas
         dpr={[1, 1.5]}

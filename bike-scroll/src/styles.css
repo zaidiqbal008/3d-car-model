@@ -478,3 +478,93 @@ h1 {
 
 /* Keep the speed-test intro at the top so the car has the middle of the screen. */
 #speed.panel { align-items: flex-start; padding-top: 20vh; }
+
+/* ---------- Doors button ---------- */
+.doors-btn {
+  position: absolute; z-index: 10; right: max(16px, 3vw); bottom: 20px;
+  display: inline-flex; align-items: center; gap: 8px; padding: 0.65rem 1.1rem; border-radius: 999px;
+  cursor: pointer; font: inherit; font-size: 0.85rem; color: var(--fg);
+  background: color-mix(in srgb, var(--bg) 80%, rgb(var(--w))); border: 1px solid rgba(var(--w), 0.2);
+  transition: opacity 0.25s, background 0.2s;
+}
+.doors-btn:hover { background: color-mix(in srgb, var(--bg) 65%, rgb(var(--w))); }
+.doors-btn[aria-pressed='true'] { border-color: var(--accent); }
+.doors-btn.hide { opacity: 0; pointer-events: none; }
+
+.cfg-doors { padding: 10px 18px 0; border-top: 1px solid rgba(var(--w), 0.08); }
+.cfg-doors button {
+  width: 100%; padding: 0.55rem 0; border-radius: 12px; cursor: pointer; font: inherit; font-size: 0.85rem;
+  color: var(--fg); background: rgba(var(--w), 0.08); border: 1px solid rgba(var(--w), 0.15);
+}
+.cfg-doors button[aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
+.cfg-foot { border-top: 0; }
+
+@media (max-width: 640px) {
+  .doors-btn { right: 12px; bottom: 16px; padding: 0.55rem 0.85rem; }
+}
+
+/* ---------- Engine detailing: controls and callouts ---------- */
+.engine-bar {
+  position: absolute; z-index: 12; left: 50%; bottom: 22px; transform: translate(-50%, 16px);
+  display: flex; gap: 10px; padding: 10px 12px; border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent); border: 1px solid rgba(var(--w), 0.14);
+  opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.3s;
+}
+.engine-bar.open { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+.engine-bar .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.lamp3d { transition: opacity 0.4s; }
+.lamp3d.hide { opacity: 0; }
+.lamp3d.hide .lamp-hit { pointer-events: none; }
+.story.exploded #engine { opacity: 0; }
+.story.exploded #engine .copy { pointer-events: none; }
+
+.xl { position: relative; display: flex; align-items: center; opacity: 0; transition: opacity 0.5s; white-space: nowrap; }
+.xl.on { opacity: 1; }
+.xl .dot {
+  position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 0 3px rgba(255, 77, 46, 0.25);
+}
+.xl .line { position: absolute; top: 0; height: 1px; width: var(--len, 44px); background: rgba(var(--w), 0.55); }
+.xl .tag {
+  font: inherit; color: inherit; text-align: inherit; cursor: pointer; pointer-events: none;
+  position: absolute; top: var(--dy, 0px); transform: translateY(-50%); padding: 6px 10px; border-radius: 8px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent); border: 1px solid rgba(var(--w), 0.18);
+}
+.xl .tag b { display: block; font-size: 0.8rem; color: var(--fg); }
+.xl .tag small { display: none; font-size: 0.68rem; color: var(--fg); opacity: 0.6; }
+.xl.hero .tag small { display: block; }
+.xl.r .line { left: 4px; transform-origin: 0 50%; transform: rotate(var(--ang, 0rad)); }
+.xl.r .tag { left: 48px; }
+.xl.l .line { right: 4px; transform-origin: 100% 50%; transform: rotate(calc(var(--ang, 0rad) * -1)); }
+.xl.l .tag { right: 48px; text-align: right; }
+.xl.hero .tag { border-color: var(--accent); }
+.xl.hero .tag b { color: var(--accent); }
+
+@media (max-width: 900px) {
+  .xl.hero .tag small { display: none; }
+  .xl .line { width: 24px; }
+  .xl.r .tag { left: 28px; } .xl.l .tag { right: 28px; }
+  #engine .copy { display: none; }
+}
+
+.xl.on .tag { pointer-events: auto; transition: border-color 0.2s, background 0.2s; }
+.xl.on .tag:hover, .xl.on .tag:focus-visible { border-color: var(--accent); background: color-mix(in srgb, var(--bg) 70%, rgb(var(--w))); }
+
+/* ---------- Part viewer (a selected part on show) ---------- */
+.viewer-surface {
+  position: absolute; inset: 0; z-index: 9; cursor: grab; touch-action: none; outline: none;
+}
+.viewer-surface:active { cursor: grabbing; }
+.viewer-card {
+  pointer-events: auto; position: absolute; z-index: 13; left: max(16px, 6vw); top: 50%; transform: translateY(-50%);
+  width: min(20rem, calc(100vw - 32px)); padding: 20px 22px; border-radius: 18px;
+  background: color-mix(in srgb, var(--bg) 90%, transparent); border: 1px solid rgba(var(--w), 0.14);
+}
+.viewer-card h3 { margin: 0 0 6px; font-size: 1.6rem; letter-spacing: -0.02em; }
+.viewer-card p { margin: 0 0 8px; line-height: 1.5; opacity: 0.75; }
+.viewer-card .eyebrow { opacity: 1; margin-bottom: 0.4rem; }
+.viewer-card .viewer-hint { font-size: 0.75rem; opacity: 0.5; margin-bottom: 14px; }
+@media (max-width: 900px) {
+  .viewer-card { top: auto; bottom: 84px; left: 16px; right: 16px; width: auto; transform: none; }
+}

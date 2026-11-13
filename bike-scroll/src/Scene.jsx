@@ -4,11 +4,9 @@ import { ContactShadows, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import config from './site.config.json'
 import Bike, { ProceduralBike } from './Bike.jsx'
-import { sim, step as stepSim } from './speedtest.js'
+import { sim, step as stepSim, UNITS_PER_METRE } from './speedtest.js'
 
 const { sections } = config
-// The 4.78 m long concept is scaled to 3 scene units, so one real metre is this many units.
-const WORLD_PER_METRE = 3 / 4.78
 
 const smoothstep = (t) => t * t * (3 - 2 * t)
 
@@ -31,7 +29,7 @@ class ModelBoundary extends Component {
  * `focus` ({ position, target } or null) blends the camera toward a close-up,
  * and `panelOpen` lifts the car on narrow screens so a bottom sheet doesn't cover it.
  */
-function ScrollCamera({ progress, focus, panelOpen }) {
+function ScrollCamera({ progress, focus, panelOpen, centered, exploded }) {
   const { camera } = useThree()
   const keys = useMemo(
     () =>
@@ -48,6 +46,8 @@ function ScrollCamera({ progress, focus, panelOpen }) {
   const tmp = useMemo(() => new THREE.Vector3(), [])
   const mix = useRef(0)
   const lift = useRef(0)
+  const centre = useRef(0)
+  const pull = useRef(1)
   // Screen-space shift per section so the model sits opposite the text.
   const shifts = useMemo(
     () =>
@@ -80,6 +80,9 @@ function ScrollCamera({ progress, focus, panelOpen }) {
     const m = smoothstep(THREE.MathUtils.clamp(mix.current, 0, 1))
     pos.lerp(fp, m)
     target.lerp(ft, m)
+    // Pull the camera back while the car is in pieces so every part fits on screen.
+    pull.current += ((exploded ? 1.35 * Math.max(1, 1.8 / (size.width / size.height)) : 1) - pull.current) * (1 - Math.exp(-2.5 * dt))
+    pos.sub(target).multiplyScalar(pull.current).add(target)
     camera.position.copy(pos)
     camera.lookAt(target)
     // Widen the lens a little as speed builds, for a sense of rush.
@@ -90,7 +93,10 @@ function ScrollCamera({ progress, focus, panelOpen }) {
     }
 
     const wide = size.width > 640
-    const shift = wide ? THREE.MathUtils.lerp(shifts[Math.max(i, 0)], shifts[Math.min(i + 1, n - 1)], t) : 0
+    // `centered` glides the car to the middle of the screen (used just before the engine view comes apart).
+    centre.current += ((centered ? 1 : 0) - centre.current) * (1 - Math.exp(-3.2 * dt))
+    const sm = 0 // the car now drives to the centre itself (see Bike), the camera stays put
+    const shift = wide ? THREE.MathUtils.lerp(shifts[Math.max(i, 0)], shifts[Math.min(i + 1, n - 1)], t) * (1 - sm) : 0
     const narrow = size.width <= 900
     lift.current += ((panelOpen && narrow ? 1 : 0) - lift.current) * k
     camera.setViewOffset(
@@ -142,7 +148,7 @@ function SpeedWorld({ open }) {
     const m = mesh.current
     m.visible = show.current > 0.01
     m.material.opacity = show.current
-    const unitsPerMetre = WORLD_PER_METRE
+    const unitsPerMetre = UNITS_PER_METRE
     const d = (sim.v / 3.6) * Math.min(dt, 0.5) * unitsPerMetre
     tex.offset.y -= d / ROAD_TILE
   })
@@ -225,7 +231,7 @@ function Lighting({ lampOn }) {
   )
 }
 
-export default function Scene({ progress, variant, custom, focus, panelOpen, lampOn = false, speedOpen = false, bg = config.theme.bg }) {
+export default function Scene({ progress, variant, custom, focus, panelOpen, lampOn = false, speedOpen = false, doorsOpen = false, exploded = false, centered = false, selected = null, viewRef = null, onSelectPart, bg = config.theme.bg }) {
   return (
     <>
       <color attach="background" args={[bg]} />
@@ -233,11 +239,12 @@ export default function Scene({ progress, variant, custom, focus, panelOpen, lam
       <Lighting lampOn={lampOn} />
       <SpeedWorld open={speedOpen} />
 
-      <ScrollCamera progress={progress} focus={focus} panelOpen={panelOpen} />
+      <ScrollCamera progress={progress} focus={focus} panelOpen={panelOpen} centered={centered} exploded={exploded} />
 
       <ModelBoundary>
         <Suspense fallback={null}>
-          <Bike url={config.model} variant={variant} custom={custom} />
+          <Bike url={config.model} variant={variant} custom={custom} doorsOpen={doorsOpen} exploded={exploded} centered={centered} progress={progress}
+            selected={selected} viewRef={viewRef} onSelectPart={onSelectPart} />
           <Environment preset="city" />
         </Suspense>
       </ModelBoundary>

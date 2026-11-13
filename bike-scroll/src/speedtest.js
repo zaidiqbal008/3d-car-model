@@ -5,6 +5,9 @@
 // 100 km/h at exactly `t100` seconds. That makes the readout match the concept's target
 // figures in content.json; it is a simulation, not a physics model of the car.
 
+// The model is about 4.36 scene units long and represents a 4.78 m car (see specs in content.json).
+export const UNITS_PER_METRE = 4.36 / 4.78
+
 export const sim = {
   state: 'idle', // idle | running | braking
   t: 0, // seconds since launch

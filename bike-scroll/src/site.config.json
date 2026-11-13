@@ -124,6 +124,26 @@
       "shift": -0.2
     },
     {
+      "id": "engine",
+      "eyebrow": "Engine detailing",
+      "title": "See how it's built.",
+      "body": "Pull the car apart to see every major part, then watch it assemble.",
+      "align": "left",
+      "shift": 0.1,
+      "camera": {
+        "position": [
+          7.28,
+          3.99,
+          8.52
+        ],
+        "target": [
+          0,
+          1.0,
+          0.2
+        ]
+      }
+    },
+    {
       "id": "speed",
       "eyebrow": "Speed test",
       "title": "Zero to fast.",
