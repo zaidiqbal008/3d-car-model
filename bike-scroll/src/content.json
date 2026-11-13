@@ -1,0 +1,269 @@
+{
+  "brand": "Concept",
+  "tagline": "A grand tourer study in light, glass and air.",
+  "nav": [
+    {
+      "label": "Story",
+      "href": "#intro"
+    },
+    {
+      "label": "Specs",
+      "href": "#specs"
+    },
+    {
+      "label": "Speed test",
+      "href": "#speed"
+    },
+    {
+      "label": "Customize",
+      "href": "#configure"
+    },
+    {
+      "label": "Highlights",
+      "href": "#highlights"
+    },
+    {
+      "label": "Finishes",
+      "href": "#finishes"
+    },
+    {
+      "label": "FAQ",
+      "href": "#faq"
+    }
+  ],
+  "cta": {
+    "label": "Register interest",
+    "href": "#reserve"
+  },
+  "heroStats": [
+    {
+      "value": "2.9s",
+      "label": "0–100 km/h"
+    },
+    {
+      "value": "620 km",
+      "label": "Target range"
+    },
+    {
+      "value": "710 kW",
+      "label": "Peak output"
+    }
+  ],
+  "highlights": {
+    "eyebrow": "Highlights",
+    "title": "Designed from the air in.",
+    "intro": "Every surface on Concept earns its place. The body is shaped by airflow first and styling second, which is why it looks the way it does.",
+    "items": [
+      {
+        "icon": "wind",
+        "title": "Active aero",
+        "body": "A flush rear deck rises at speed and settles at rest, adding downforce without a permanent wing."
+      },
+      {
+        "icon": "bolt",
+        "title": "Dual-motor drive",
+        "body": "One motor per axle, torque split in milliseconds. Rear-biased in corners, balanced when you need grip."
+      },
+      {
+        "icon": "battery",
+        "title": "800 V architecture",
+        "body": "A low, flat pack lowers the centre of gravity and charges from 10 to 80% in about 18 minutes."
+      },
+      {
+        "icon": "layers",
+        "title": "Layered paint",
+        "body": "Clearcoat over a pearl base creates depth that shifts with the light. Three finishes at launch."
+      },
+      {
+        "icon": "lamp",
+        "title": "Slim light signature",
+        "body": "Matrix LED lamps sit behind a single dark lens, so the face reads as one clean shape."
+      },
+      {
+        "icon": "seat",
+        "title": "Low, focused cabin",
+        "body": "A driver-first cockpit with bolstered seats, physical controls for the essentials and a clear view out."
+      }
+    ]
+  },
+  "specs": {
+    "eyebrow": "Specifications",
+    "title": "The numbers.",
+    "note": "Concept figures are design targets. This is a design study, not a production vehicle.",
+    "groups": [
+      {
+        "name": "Performance",
+        "rows": [
+          [
+            "0–100 km/h",
+            "2.9 s"
+          ],
+          [
+            "Top speed",
+            "290 km/h (limited)"
+          ],
+          [
+            "Peak power",
+            "710 kW / 965 PS"
+          ],
+          [
+            "Peak torque",
+            "1,150 Nm"
+          ],
+          [
+            "Drive",
+            "Dual motor, all-wheel drive"
+          ]
+        ]
+      },
+      {
+        "name": "Battery and charging",
+        "rows": [
+          [
+            "Usable capacity",
+            "105 kWh"
+          ],
+          [
+            "Target range (WLTP)",
+            "620 km"
+          ],
+          [
+            "Architecture",
+            "800 V"
+          ],
+          [
+            "Peak DC charging",
+            "320 kW"
+          ],
+          [
+            "10–80% charge",
+            "approx. 18 min"
+          ]
+        ]
+      },
+      {
+        "name": "Dimensions",
+        "rows": [
+          [
+            "Length",
+            "4,780 mm"
+          ],
+          [
+            "Width",
+            "1,990 mm"
+          ],
+          [
+            "Height",
+            "1,330 mm"
+          ],
+          [
+            "Wheelbase",
+            "2,900 mm"
+          ],
+          [
+            "Kerb weight",
+            "1,960 kg"
+          ]
+        ]
+      },
+      {
+        "name": "Chassis",
+        "rows": [
+          [
+            "Suspension",
+            "Adaptive double wishbone, multi-link rear"
+          ],
+          [
+            "Brakes",
+            "Carbon-ceramic, 410 mm front"
+          ],
+          [
+            "Wheels",
+            "21 in forged alloy"
+          ],
+          [
+            "Weight balance",
+            "48 / 52 front / rear"
+          ],
+          [
+            "Seats",
+            "2+2"
+          ]
+        ]
+      }
+    ]
+  },
+  "finishes": {
+    "eyebrow": "Finishes",
+    "title": "Pick a colour. See it live.",
+    "intro": "Each finish is a real material variant in the 3D model. Choose one to try it in the configurator, where you can also change the wheels and calipers.",
+    "items": [
+      {
+        "name": "Carmine Candy",
+        "body": "A deep, saturated red with a glassy clearcoat. Loud in sunlight, rich in shade."
+      },
+      {
+        "name": "Pearly Swirly",
+        "body": "A soft pearl white with a faint iridescent shift that turns lilac and blue at the edges."
+      },
+      {
+        "name": "Torched Graphite",
+        "body": "A dark metallic grey with a burnt, warm undertone. Understated until the light hits it."
+      }
+    ]
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Questions, answered.",
+    "items": [
+      {
+        "q": "Is Concept a real car?",
+        "a": "No. It is a design concept, shown here as a real-time 3D model. The specifications are design targets, and the car is not for sale."
+      },
+      {
+        "q": "Where does the 3D model come from?",
+        "a": "It is the Car Concept sample model from the Khronos Group glTF Sample Assets, based on a public-domain model by Unity Fan, and licensed CC BY 4.0. Full credit is in the footer."
+      },
+      {
+        "q": "Can I change the colour?",
+        "a": "Yes. Yes. Open the Customize chapter to change the paint colour and finish, the rims and the brake calipers. Your choices are remembered in this browser."
+      },
+      {
+        "q": "The page feels slow on my device. What can I do?",
+        "a": "The model is about 11 MB and rendered live with WebGL. A first load on a slow connection takes a moment. A recent browser with hardware acceleration enabled gives the best result."
+      },
+      {
+        "q": "What does the Register interest form do?",
+        "a": "It is a demo. Nothing is sent anywhere. Wire it to your own backend or mailing list service before using it for real."
+      }
+    ]
+  },
+  "reserve": {
+    "eyebrow": "Stay in the loop",
+    "title": "Register your interest.",
+    "body": "Leave your details and we'll tell you if Concept ever becomes more than a concept."
+  },
+  "footerLinks": [
+    {
+      "label": "Story",
+      "href": "#intro"
+    },
+    {
+      "label": "Specs",
+      "href": "#specs"
+    },
+    {
+      "label": "Finishes",
+      "href": "#finishes"
+    },
+    {
+      "label": "FAQ",
+      "href": "#faq"
+    }
+  ],
+  "speedTest": {
+    "t100": 2.9,
+    "vmax": 290,
+    "note": "Simulated from the concept's target figures (0–100 km/h in 2.9 s, limited to 290 km/h). It is a demonstration, not a measurement."
+  }
+}

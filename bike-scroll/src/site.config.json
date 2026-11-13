@@ -1,0 +1,225 @@
+{
+  "name": "Concept",
+  "model": "/models/car.glb",
+  "theme": {
+    "bg": "#08090c",
+    "fg": "#f4f1ea",
+    "accent": "#ff4d2e"
+  },
+  "variants": [
+    {
+      "name": "Carmine Candy",
+      "swatch": "#b3122b"
+    },
+    {
+      "name": "Pearly Swirly",
+      "swatch": "#d9d4e6"
+    },
+    {
+      "name": "Torched Graphite",
+      "swatch": "#4a4d55"
+    }
+  ],
+  "credit": {
+    "text": "\"Car Concept\" by Khronos Group, from a public-domain model by Unity Fan",
+    "url": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/CarConcept",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "sections": [
+    {
+      "id": "intro",
+      "eyebrow": "Concept 01",
+      "title": "Drive the future.",
+      "body": "A concept car in real time, in your browser. Scroll to walk around it.",
+      "align": "left",
+      "camera": {
+        "position": [
+          3.8,
+          1.3,
+          4.2
+        ],
+        "target": [
+          0,
+          0.35,
+          0
+        ]
+      }
+    },
+    {
+      "id": "side",
+      "eyebrow": "Profile",
+      "title": "One unbroken line.",
+      "body": "From nose to tail, the silhouette does all the talking.",
+      "align": "right",
+      "camera": {
+        "position": [
+          5.4,
+          0.6,
+          0.2
+        ],
+        "target": [
+          0,
+          0.35,
+          0
+        ]
+      }
+    },
+    {
+      "id": "front",
+      "eyebrow": "Front",
+      "title": "Look it in the eye.",
+      "body": "Sharp lamps and a low, wide stance.",
+      "align": "left",
+      "camera": {
+        "position": [
+          0.4,
+          0.55,
+          5.2
+        ],
+        "target": [
+          0,
+          0.35,
+          0
+        ]
+      }
+    },
+    {
+      "id": "detail",
+      "eyebrow": "Detail",
+      "title": "Paint with depth.",
+      "body": "Clearcoat and iridescence, rendered live. Pick a finish below.",
+      "align": "right",
+      "camera": {
+        "position": [
+          2.3,
+          0.45,
+          1.6
+        ],
+        "target": [
+          0.5,
+          0.3,
+          0.9
+        ]
+      }
+    },
+    {
+      "id": "specs",
+      "eyebrow": "Specifications",
+      "title": "The numbers.",
+      "body": "",
+      "align": "right",
+      "camera": {
+        "position": [
+          6.2,
+          0.9,
+          3.2
+        ],
+        "target": [
+          0,
+          0.35,
+          0
+        ]
+      },
+      "shift": -0.2
+    },
+    {
+      "id": "speed",
+      "eyebrow": "Speed test",
+      "title": "Zero to fast.",
+      "body": "Launch the car down the strip and watch the clock. Brake whenever you like.",
+      "align": "left",
+      "shift": 0.06,
+      "camera": {
+        "position": [
+          -3.8,
+          1.0,
+          -6.0
+        ],
+        "target": [
+          0,
+          0.4,
+          1.6
+        ]
+      }
+    },
+    {
+      "id": "rear",
+      "eyebrow": "Rear",
+      "title": "Leave them behind.",
+      "body": "Three finishes. One concept. Zero compromises.",
+      "align": "center",
+      "camera": {
+        "position": [
+          -3.6,
+          1.2,
+          -4.6
+        ],
+        "target": [
+          0,
+          0.35,
+          0
+        ]
+      }
+    },
+    {
+      "id": "configure",
+      "eyebrow": "Configurator",
+      "title": "Make it yours.",
+      "body": "Choose the paint, wheels, calipers and interior. The car updates as you go.",
+      "align": "left",
+      "shift": 0,
+      "camera": {
+        "position": [
+          4.4,
+          1.2,
+          4.8
+        ],
+        "target": [
+          0,
+          0.35,
+          0
+        ]
+      },
+      "focus": {
+        "paint": null,
+        "wheels": {
+          "position": [
+            2.7,
+            0.55,
+            2.1
+          ],
+          "target": [
+            0.7,
+            0.32,
+            1.0
+          ]
+        },
+        "brakes": {
+          "position": [
+            1.9,
+            0.38,
+            1.6
+          ],
+          "target": [
+            0.72,
+            0.3,
+            0.98
+          ]
+        },
+        "interior": {
+          "position": [
+            2.0,
+            1.9,
+            2.4
+          ],
+          "target": [
+            0,
+            0.55,
+            0.15
+          ]
+        }
+      }
+    }
+  ]
+}
