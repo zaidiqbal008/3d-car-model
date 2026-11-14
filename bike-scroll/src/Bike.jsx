@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, useFrame } from '@react-three/fiber'
 import { Html, useGLTF } from '@react-three/drei'
 import { sim, UNITS_PER_METRE } from './speedtest.js'
+import { hand } from './handState.js'
 import { EXPLODE_PARTS, EXPLODE_SECONDS, ASSEMBLE_SECONDS, EXPLODE_SPAN } from './explode.js'
 import * as THREE from 'three'
 import { DEFAULTS, PAINT_TYPES, RIM_FINISHES, SEAT_FINISHES } from './customization.js'
@@ -208,10 +209,11 @@ export default function Bike({ url, variant = null, custom = DEFAULTS, doorsOpen
     // Gentle sway while apart (keeps callouts on the same sides); still while inspecting a part.
     // While apart the whole car slowly sweeps left to right and back (paused while inspecting a part).
     if (exploded && rig.p > 0.7 && !selected) rig.sway += dt
-    const sweep = exploded && rig.p > 0.7 && !selected ? Math.sin(rig.sway * 0.6) * 0.5 : 0
+    const sweep = exploded && rig.p > 0.7 && !selected && !hand.active ? Math.sin(rig.sway * 0.6) * 0.5 : 0
     rig.spin = THREE.MathUtils.damp(rig.spin, sweep, 2.5, dt)
     model.position.x = rig.spin
-    model.rotation.y = 0
+    rig.turn = THREE.MathUtils.damp(rig.turn ?? 0, hand.active ? hand.ry : 0, 6, dt)
+    model.rotation.y = rig.turn
   })
 
   // KHR_materials_transmission makes three.js re-render the whole scene into an offscreen
