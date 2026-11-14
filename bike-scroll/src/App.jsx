@@ -8,6 +8,7 @@ import Scene from './Scene.jsx'
 import Configurator from './Configurator.jsx'
 import Lamp3D from './Lamp3D.jsx'
 import { EXPLODE_PARTS, ASSEMBLE_SECONDS } from './explode.js'
+import HandControl from './HandControl.jsx'
 import { sim, configure as configureSim, launch, brake, reset as resetSim } from './speedtest.js'
 import { loadCustom, saveCustom } from './customization.js'
 
@@ -200,6 +201,7 @@ function EnginePanel({ open, mode, onStart, onAssemble }) {
         disabled={mode !== 'apart' && mode !== 'centering'}>
         Assemble
       </button>
+      {open && <HandControl onOpen={onStart} onFist={onAssemble} />}
     </div>
   )
 }
